@@ -1,0 +1,9 @@
+#### Change default gateway.
+	route add default <NewDefaultGatewayIP>
+	route delete default <OldDefaultGatewayIP>
+	
+#### Add static route.
+	route add <Network/CIDR> <InterfaceIP>
+	
+#### Delete static route.
+	route delete <Network/CIDR> <InterfaceIP>

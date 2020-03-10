@@ -1,0 +1,3 @@
+#### Display the emitted events that will trigger a service.
+	initctl show-config -e <ServiceName>
+	

@@ -1,0 +1,4 @@
+SOLARIS 10:
+
+	----- Fix awkward keybindings -----
+	bind '"\e[1~": beginning-of-line' '"\e[4~": end-of-line' '"^[[3": prefix-2' '"\eOD": backward-word' '"\eOC": forward-word'

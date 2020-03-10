@@ -1,0 +1,31 @@
++-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+- edit all files to persist network changes +-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-#+-
+
+ifconfig <InterfaceName> down
+ifconfig <InterfaceName> <NetIpaddress> netmask <Netmask> up
+
+ifconifg <InterfaceName> down
+ifconifg <InterfaceName> hw ether <NewMacAddress> 
+ifconifg <InterfaceName> up
+
+dhclient <InterfaceName>
+dhclient -r <InterfaceName>
+
+hostname <NewHostName>
+
+route add default gw <NewDefaultGatewayIP>
+route add -net <NetworkIP> netmask <Netmask> gw <InterfaceIP>
+route del -net <NetworkIP> netmask <Netmask> gw <InterfaceIP>
+
+arp -s <IpAssicatedToMAC>  <MACToAdd> can use ss or  ip commands if apr not available.
+
+update /etc/sysconfig/network-scripts/ifcfg-<InterfaceName>
+	Add MACADDR = <NewMacAddress>
+
+update /etc/hostname
+update /etc/hosts
+update /etc/sysconfig/network-scripts/profiles/defaults
+update /etc/sysconfig/network-scripts/route-<interface-name>
+update any other non-standard network configuration files on the system.
+
+
+

@@ -1,0 +1,9 @@
+#### Stop a service and remove it from boot startup.
+	svcadm disable svc:<PathToServiceExecuable>
+
+#### TEMPORARALLY - Stop a service and remove it from boot startup.
+	svcadm disable  -t svc:<PathToServiceExecuable>
+	
+#### Changes to milestone.
+	svcadm milestone multi-user
+

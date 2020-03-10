@@ -1,0 +1,12 @@
+#### Display servcie status.
+	svcs <ServiceName>
+	
+#### Display a service's dependencies.
+	svcs -d <ServiceName>
+		
+#### display current milestone. 
+	## The one with the most current STIME.
+	svcs milestone*
+	
+#### Dsplay all online services.
+	svcs -a | grep online

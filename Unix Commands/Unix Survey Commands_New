@@ -1,0 +1,93 @@
+----- Login Shells
+	ps -elf | tr -s " " | cut -d " " -f 3,4,5,13,15- | grep -
+	
+----- Check /etc/profile, ~/.bash_profile, ~/.bashrc, ~/.bach_login, ~/.bash_logout, /etc/login
+
+----- Dump superblock on device mounts
+	dumpe2fs <FullPathToDevicePartition>  (dumpe2fs /dev/sda1)
+	
+----- Check for masked directories/files that have been mounted over.
+	mount (look for any oddy names mount points)
+	
+----- Check /var/tmp for any files trying to survive reboots
+	ls -la /var/tmp
+	
+----- Look at the linked rc scripts of the current run level. Should be to somthing in /etc/rc.d/init.d
+	ls -la /etc/rc.d/rc$(runlevel | cut -d' ' -f2).d | grep -v init\.d
+	
+----- Same as above but for all rc.d directories/runlevels
+	find -l /etc/rc.d -type l -ls | grep -v init\.d
+	
+----- Check shells with setuid or setgid for privescalation.
+
+----- Check xinet.d services
+	grep disable /etc/xinetd.d/*|grep no
+	
+----- Might help find some bad stuff NOT ALL INCLUSIVE!
+	find <BinaryDirectory> -type f -exec rpm -q --whatprovides \{\} \; | grep "owned"
+	
+----- Files with custom logging facilities:
+	find /etc -type f -exec grep -H SyslogFacility \{\} \;
+	
+----- Find installed packages on system.
+	grep -i install /var/log/{rpm*,yum*}
+	
+----- Checking nsswitch.conf lib files for back strings:
+	strings /lib/libnss_* 2>/dev/null| grep /etc
+	
+----- Finding a spesfic users creation date based on time
+	ausearch -x useradd -i | grep "MM/DD/YYYY HH:MM:SS"
+	
+
+##### Systemd
+		
+	----- local configuration units have been modified on a system.
+		systemd-delta 
+		
+	----- Runtime units have been modified on a system.	
+		systemd-delta /run
+		
+	----- System unit configuration changes have been modified on a system.	
+		systemd-delta /run/systemd/system
+		
+	----- Get current running target
+		systemctl list-units -t target (look for the most recent user enabled target)
+	
+	----- Search unit files for string
+		egrep -R <String> /usr/lib/systemd/system
+	
+##### SMF
+
+	----- show current version and patch level.
+		showrev
+
+	----- Determine if sytem is using the standard Default milestone.
+		svcprop <serviceName>
+		svcprop svc:/system/svc/restarter:default/:properties/options/milestone (Error = multi-user-server)
+		
+	----- Determine services configured at boot.
+		svcs -a | egrep 'online|legacy_run.*rc[0123S]_d'
+	
+	----- ports to peers and processes
+		ptree -a | awk '{print $1}' | xargs pfiles | egrep '(^[0-9]|peername|sockname)'
+		
+	----- current milestone. (One witht he heighet run time)
+		svcs | grep milestone* 
+		
+	----- Neater processess
+		pgrep -f [^0-9] -d, | xargs ps -fp
+		
+	----- Netstat for listening and established connections
+		netstat -an
+		
+	----- Configure network interfaces
+		ifconfig <InterfcaeName> dhcp start
+		ifconfig <InterfcaeName> dhcp release
+		
+	----- console logins are located in
+		/var/adm/authlog
+		
+	----- Search for reboots
+		grep "SunOS Release <SolarisVersion>" /var/adm/messages
+		grep "Copyright" /var/adm/messages
+		

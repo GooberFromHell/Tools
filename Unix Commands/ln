@@ -1,0 +1,2 @@
+----- Create soft link to a file
+	ln -sv <File/DirYouWantLinkedTo> <SoftLinkFile>

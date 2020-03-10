@@ -1,0 +1,75 @@
+#### Sysv
+	/etc/rc.d
+	/etc/rc.d/rc.sysinit 	- configuration script run before other services, mounts file system, etc..
+	/etc/rc.d/rc.local 		- configuration script run after services. Custom scripts, vpns, tunnels, etc..
+	/etc/inittab
+	PID 1
+	
+	MAN PAGE: 
+			INIT(8) Linux System Administrator’s Manual INIT(8)
+
+			NAME
+			init, telinit – process control initialization
+			
+	configuration tools used:
+		service
+		chkconfig
+		runlevel
+		who-r
+	
+	Boot services:
+		chkconfig --list
+	
+
+#### Upstart
+	/etc/rc
+	/etc/inittab (might not have this)
+	/etc/init/
+	PID 1 -> /sbin/init
+	/etc/init/rc-sysinit.conf -> controls default runlevel (grep "env.*DEFAULT_RUNLEVEL" /etc/init/rc-sysinit.conf)
+	
+	configuration tools used:
+		updte-rc.d (some distros)
+		initctl
+		
+	boot services:
+		initctl show-config
+		initctl status <ServiceName>
+		initctl 
+	
+	MAN PAGE: 
+			init(8) System Manager’s Manual init(8)
+
+			NAME
+			init – Upstart process management daemon
+	
+#### systemd
+	/etc/rc
+	/etc/systemd/system
+	/usr/lib/systemd/system
+	PID 1 -> /usr/lib/systemd/systemd or linked /sbin/init/ -> /usr/lib/systemd/systemd
+	
+	MAN PAGE:
+			SYSTEMD(1) systemd SYSTEMD(1)
+
+			NAME
+			systemd, init – systemd system and service manager
+
+#### SMF
+	MAN PAGE:
+			System Administration Commands init(1M)
+
+			NAME
+			init, telinit – process control initilization
+			
+#### Debian
+	configuration tools used:
+		update-rc.d
+		
+	network configuration stored in:
+		/etc/network
+
+#### FreeBSD
+	network configuration stored in:
+		/etc/rc.conf
+	

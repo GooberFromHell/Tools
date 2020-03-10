@@ -1,0 +1,12 @@
+#### Change interface IP address
+	ifconfig <INTERFACENAME> down
+	ifconfig <INTERFACENAME> <IPADDRESS> netmask <NETMASK> up
+
+#### Change Interface MAC Address
+	ifconfig <InterfaceName> down
+	ifconfig <InterfaceName> eth <MACAddress>
+	ifconfig up
+
+#### start DHCO on an interface.
+	ifconfig <InterfaceName> dhcp start
+	ifconfig <InterfaceName> dhcp release

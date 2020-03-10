@@ -1,0 +1,25 @@
+#### SMF
+	----- Add default route
+		route add default <IPAddress>
+		
+	----- Remove default route 
+		routel delete default <IPAddress>
+		
+	----- Add route
+		route add <RoutedNetwork>/<Netmask> <GatewayToTake>
+		
+	----- Delete rout
+		route delete <RoutedNetwork>/<Netmask> <GatewayToTake>
+		
+#### Lunix Systems
+	----- Add default route
+		route add default gw <IPAddress>
+		
+	----- Remove default route 
+		routel del default <IPAddress>
+		
+	----- Add route
+		route add -net <RoutedNetwork> netmask <Netmask255Form> gw <GatewayToTake>
+		
+	----- Delete rout
+		route del -net <RoutedNetwork> netmask <Netmask255Form>

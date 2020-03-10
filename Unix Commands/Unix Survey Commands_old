@@ -1,0 +1,16 @@
+----- Login Shells
+	ps -elf | tr -s " " | cut -d " " -f 3,4,5,13,15- | grep -
+	
+----- Check /etc/profile, ~/.bash_profile, ~/.bashrc, ~/.bach_login, ~/.bash_logout, /etc/login
+
+----- Dump superblock on device mounts
+	dumpe2fs <FullPathToDevicePartition>  (dumpe2fs /dev/sda1)
+	
+----- Check for masked directories/files that have been mounted over.
+	mount (look for any oddy names mount points)
+	
+----- Check /var/tmp for any files trying to survive reboots
+	ls -la /var/tmp
+	
+----- Find all files linked to a particular file.
+	find / -lname '/usr/lib/libmenu.so.5.5' -ls

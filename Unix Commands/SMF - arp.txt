@@ -1,0 +1,5 @@
+#### Add entry to arp table.
+	arp -s <IpAssicatedToMAC> <MACToAdd>
+
+#### delete entry from arp table.
+	arp -d <IpAssicatedToMAC> <MACToDelete>

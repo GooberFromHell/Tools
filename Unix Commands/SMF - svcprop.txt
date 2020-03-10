@@ -1,0 +1,4 @@
+#### Find Default milestone.
+	## if it errors, the milestone is not set using svcadm and 
+	## the default milestone is multi-user-server.
+	svcprop svc:/system/svc/restarter:default/:properties/options/milestone
