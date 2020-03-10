@@ -1,0 +1,6 @@
+#### find user accoutn creation dates and times
+	ausearch -x useradd -i 
+	aureport -m | grep <UserName>
+	
+#### find when a user ran a particular command.
+	ausearch -m USER_START -x <Command> -ts DD/MM/YYYY HH:MM:SS | grep <UserName>

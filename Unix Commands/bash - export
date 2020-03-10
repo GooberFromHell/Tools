@@ -1,0 +1,2 @@
+(BASH) --------- Make a variables Global AFTER it has been defined ----------
+		export <VariableName>

@@ -1,0 +1,2 @@
+#### Summarize total size of a file or directory.
+	du -h --summarize <DirectoryOrFilename>

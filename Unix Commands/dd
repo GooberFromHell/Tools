@@ -1,0 +1,5 @@
+----- Copy the running MBR.
+	dd if=<BootDisk> of=<OutputFileName>bs=512 count=1
+
+----- Moify the running MBR on the current boot drive.
+	echo -n <charactersOrDataToEnter> | dd of=<BootDisk> bs=1 seek=<ByteOffsetToStartOverWrite> conv=notrunc

@@ -1,0 +1,2 @@
+(CSH) --------- Make a global variable ----------
+		setenv <VariableName>=<data>

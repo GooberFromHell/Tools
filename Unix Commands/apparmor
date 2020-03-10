@@ -1,0 +1,5 @@
+----- check is App armour is enabled
+		aa-enabled
+	
+----- Check for line in grub configuration /boot/grub/
+		GRUB_CMDLINE_LINUX_DEFAULT="apparmor=0" (or apparmor=1 for enabled)

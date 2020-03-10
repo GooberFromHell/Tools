@@ -1,0 +1,5 @@
+#### Display filesystem device information.
+	dumpe2fs /dev/<Partition/Volume>
+
+#### Display partition or volume Superblock information.
+	dumpe2fs -h /dev/<Partition/Volume> | sort | more
