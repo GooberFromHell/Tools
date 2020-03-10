@@ -1,0 +1,928 @@
+<html>
+
+<head>
+    <title>Unix Permissions Assistant</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <!--<link rel="stylesheet" type="text/css" media="screen" href="/css/bulma.css" />-->
+    <link href="https://fonts.googleapis.com/css?family=Lobster+Two&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Spartan&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #e1e1e1;
+            font-family: 'Spartan', sans-serif;
+        }
+
+        textarea {
+            width: 100%;
+            height: 7em;
+        }
+
+        h2.title {
+            margin-top: 0;
+        }
+
+        .left-space {
+            margin-left: 0.6em;
+        }
+
+
+        .title {
+            text-align: center;
+        }
+
+        .blury-box {
+            padding: 10px;
+            border-radius: 15px;
+            background: linear-gradient(-45deg, 225deg, #f1f1f1, #cbcbcb);
+            box-shadow: -27px 27px 65px #b4b4b4,
+                27px -27px 65px #ffffff;
+
+        }
+
+        .perm {
+            height: auto;
+            display: grid;
+        }
+
+        .perm * {
+            text-align: center;
+            align-content: center;
+            padding: 5px;
+            margin: 0 auto;
+        }
+
+        #special-perm * {
+            width: auto;
+        }
+
+        .owner {
+            display: inline-block;
+            margin-top: 2px;
+            text-align: center;
+        }
+
+        .owner * {
+            position: relative;
+            display: block;
+        }
+
+        #content {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+            grid-template-rows: 110px 230px 250px 1fr;
+            grid-row-gap: 10px;
+            grid-column-gap: 10px;
+            grid-template-areas:
+                "spec-user spec-user spec-user . ."
+                "input-area input-area input-area input-area input-area"
+                "output-area output-area output-area output-area output-area"
+                ". . . . .";
+        }
+
+        #spec_user {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 110px;
+            grid-template-areas:
+                "user_group fields object_type";
+            grid-area: spec-user;
+            text-align: center;
+            grid-column-gap: 5px;
+        }
+
+        #object_type {
+            grid-area: object_type;
+        }
+
+        #fields {
+            grid-area: fields;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 50px 20px;
+            grid-template-areas:
+                "user-f group-f"
+                "name-t name-of"
+        }
+
+        #owner_field {
+            grid-area: user-f;
+        }
+
+        #group_field {
+            grid-area: group-f;
+        }
+
+        #div5 {
+            grid-area: name-t;
+            text-align: center;
+        }
+
+        #user_area {
+            grid-area: user_group;
+        }
+
+        #name_of {
+            grid-area: name-of;
+        }
+
+        #user_group {
+            display: grid;
+            grid-template-columns: repeat(3, auto);
+            grid-template-rows: repeat(2, auto);
+            grid-column-gap: 2px;
+            grid-row-gap: 5px;
+            padding: 5px;
+            align-items: center;
+            border: 1px solid black;
+        }
+
+        .div1 {
+            grid-area: 1 / 1 / 2 / 2;
+        }
+
+        .div2 {
+            grid-area: 1 / 2 / 2 / 3;
+        }
+
+        .div3 {
+            grid-area: 1 / 3 / 2 / 4;
+        }
+
+        #input_area {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            grid-row-gap: 25px;
+            grid-column-gap: 10px;
+            grid-template-areas:
+                "user-c group-c other-c"
+                "special_perms dir_exe other_things";
+            grid-area: input-area;
+        }
+
+        #user {
+            grid-area: user-c;
+        }
+
+        #group {
+            grid-area: group-c;
+        }
+
+        #other {
+            grid-area: other-c;
+        }
+
+        #specials {
+            grid-area: special_perms;
+            text-align: center;
+        }
+
+        #dir_exe {
+            grid-area: dir_exe;
+            height: 100%;
+
+        }
+
+        #other_things {
+            grid-area: other_things;
+            height: 100%;
+
+        }
+
+
+        #output-area {
+            grid-area: output-area;
+        }
+
+        #output {
+            display: grid;
+            grid-template-columns: repeat(3, 25%);
+            grid-template-rows: repeat(10, 45px);
+            grid-column-gap: 2px;
+            grid-row-gap: 0px;
+			vertical-align: center;
+			align-text:center;
+        }
+
+        #output * {
+            margin: 0;
+        }
+
+        #user {
+            grid-area: 1 / 1 / 4 / 2;
+        }
+
+        #ur {
+            grid-area: 1 / 2 / 2 / 3;
+        }
+
+        #ur_result {
+            grid-area: 1 / 3 / 2 / 4;
+        }
+
+        #uw {
+            grid-area: 2 / 2 / 3 / 3;
+        }
+
+        #uw_result {
+            grid-area: 2 / 3 / 3 / 4;
+        }
+
+        #ue {
+            grid-area: 3 / 2 / 4 / 3;
+        }
+
+        #ue_result {
+            grid-area: 3 / 3 / 4 / 4;
+        }
+
+        #group {
+            grid-area: 4 / 1 / 7 / 2;
+        }
+
+        #gr {
+            grid-area: 4 / 2 / 5 / 3;
+        }
+
+        #gr_result {
+            grid-area: 4 / 3 / 5 / 4;
+        }
+
+        #gw {
+            grid-area: 5 / 2 / 6 / 3;
+        }
+
+        #gw_result {
+            grid-area: 5 / 3 / 6 / 4;
+        }
+
+        #ge {
+            grid-area: 6 / 2 / 7 / 3;
+        }
+
+        #ge_result {
+            grid-area: 6 / 3 / 7 / 4;
+        }
+
+        #other {
+            grid-area: 7 / 1 / 10 / 2;
+        }
+
+        #or {
+            grid-area: 7 / 2 / 8 / 3;
+        }
+
+        #or_result {
+            grid-area: 7 / 3 / 8 / 4;
+        }
+
+        #ow {
+            grid-area: 8 / 2 / 9 / 3;
+        }
+
+        #ow_result {
+            grid-area: 8 / 3 / 9 / 4;
+        }
+
+        #oe {
+            grid-area: 9 / 2 / 10 / 3;
+        }
+
+        #oe_result {
+            grid-area: 9 / 3 / 10 / 4;
+        }
+
+    </style>
+</head>
+
+<body class="">
+    <div class="">
+        <h2 class="title">Unix permissions assistant
+        </h2>
+        <div class=title_sub style="text-align: center; line-height: 4px;margin-bottom: 50px;">
+            <p> A quick tool to help with unix permissions.</p>
+            <pre> - Created by Walter Cottrell (2020) </pre>
+        </div>
+
+        <div id=content>
+            <div id="spec_user">
+                <div id=user_area>
+                    <span>Trying to find a</span>
+                    <div id="user_group">
+                        <div class="div1">
+                            <span>User</span><input type="checkbox" id="its_a_user" />
+                        </div>
+                        <div class="div2">or</div>
+                        <div class="div3">
+                            <span>Group?</span><input type="checkbox" id="its_a_group" />
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <div id=fields>
+                    <div id=owner_field style="align-items: center;display: inline-block;">
+                        <div class="owner">
+                            <span>User</span>
+                            <input type="text" id="user-owner" placeholder="root" />
+                        </div>
+                    </div>
+
+                    <div id=group_field style="align-items: center;display: inline-block;">
+                        <div class="owner">
+                            <span>Group</span>
+                            <input id="group-owner" placeholder="root" />
+                        </div>
+                    </div>
+                    <div id="div5">
+                        <div style="padding: 0 10px 0 10px;" id="name_type"></div>
+                    </div>
+                    <div id="name_of">
+                        <input style="float:right;" type="text" id="the_name" placeholder="" />
+                    </div>
+                </div>
+
+                <div id="object_type">
+                    <label>Object Type?</label>
+                    <div style="padding: 0 5px ; text-align: left;">
+                        <div title="Is the object a directory?">
+                            <input type="checkbox" id="directory" />
+                            <label> Directory</label>
+                        </div>
+                        <div style="display: block" title="Is the object a file?">
+                            <input type="checkbox" id="file" checked />
+                            <label> File</label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="input_area">
+                <div class="perm blury-box" id=user-c>
+                    <span class="title" id="user-title">User</span>
+                    <div style="display:inline-flex">
+                        <div>
+                            <span><b>r</b></span>
+                            <input type="checkbox" class="perm" id="user-read" />
+                        </div>
+                        <div>
+                            <span><b>w</b></span>
+                            <input type="checkbox" class="perm" id="user-write" />
+                        </div>
+                        <div>
+                            <span><b>x</b></span>
+                            <input type="checkbox" class="perm" id="user-execute" />
+                        </div>
+                    </div>
+                </div>
+                <div class="perm blury-box" id=group-c>
+                    <span class="title" id="group-title">Group</span>
+                    <div id="group-perm" style="display:inline-flex">
+                        <div>
+                            <span><b>r</b></span>
+                            <input type="checkbox" class="perm" id="group-read" />
+                        </div>
+                        <div>
+                            <span><b>w</b></span>
+                            <input type="checkbox" class="perm" id="group-write" />
+                        </div>
+                        <div>
+                            <span><b>x</b></span>
+                            <input type="checkbox" class="perm" id="group-execute" />
+                        </div>
+                    </div>
+                </div>
+                <div class="perm blury-box" id=other-c>
+                    <span class="title" id="other-title">Other</span>
+                    <div id="other-perm" style="display:inline-flex">
+                        <div>
+                            <span><b>r</b></span>
+                            <input type="checkbox" class="perm" id="other-read" />
+                        </div>
+                        <div>
+                            <span><b>w</b></span>
+                            <input type="checkbox" class="perm" id="other-write" />
+                        </div>
+                        <div>
+                            <span><b>x</b></span>
+                            <input type="checkbox" class="perm" id="other-execute" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class=blury-box id=specials>
+                    <span class="title" id="speical-title">Special Permissions</span>
+                    <div class="perm" id="special-perm" style="display:flex;">
+                        <div>
+                            <span><b>SUID</b></span>
+                            <input type="checkbox" class="perm" id="suid" />
+                        </div>
+                        <div>
+                            <span><b>SGID</b></span>
+                            <input type="checkbox" class="perm" id="guid" />
+                        </div>
+                        <div id="stick-bit">
+                            <span><b>Sticky Bit</b></span>
+                            <input type="checkbox" class="perm" id="sticky-bit" />
+                        </div>
+                    </div>
+                </div>
+                <div class="blury-box" id="dir_exe" style="text-align: center;display: table;">
+                    <lable>Directory traverse?</lable>
+                    <div style="text-align: left;">
+                        <div id="dir_exe_sub" style="display: flex" title="Does the user or group have the execute
+permission in ALL of the parent directories?">
+                            <input type="checkbox" id="file_parents" />
+                            <label>
+                                Does the user or group in question<br />
+                                have execute on <b><u>ALL</u></b> parent directories?</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="blury-box" id="other_things" style="text-align: center;display: table">
+                    <lable>User in group?</lable>
+                    <div style=" text-align: left;">
+                        <div id="user_in_group" style="display: flex;" title="Is the user part of the group associated with the file's group?">
+                            <input type="checkbox" id="in_group" />
+                            <label> Is the User in question in "Group"?</label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div id=output-area style="margin-top: 1em;">
+                <div id="output">
+                    <div class='user-per-area' id="user"></div>
+                    <div class='user-per-area' id="ur"></div>
+                    <div class='user-per-area' id="ur_result"></div>
+                    <div class='user-per-area' id="uw"></div>
+                    <div class='user-per-area' id="uw_result"></div>
+                    <div class='user-per-area' id="ue"></div>
+                    <div class='user-per-area' id="ue_result"></div>
+                    <div class='group-per-area' id="group"></div>
+                    <div class='group-per-area' id="gr"></div>
+                    <div class='group-per-area' id="gr_result"></div>
+                    <div class='group-per-area' id="gw"></div>
+                    <div class='group-per-area' id="gw_result"></div>
+                    <div class='group-per-area' id="ge"></div>
+                    <div class='group-per-area' id="ge_result"></div>
+                    <div class='other-per-area' id="other"></div>
+                    <div class='other-per-area' id="or"></div>
+                    <div class='other-per-area' id="or_result"></div>
+                    <div class='other-per-area' id="ow"></div>
+                    <div class='other-per-area' id="ow_result"></div>
+                    <div class='other-per-area' id="oe"></div>
+                    <div class='other-per-area' id="oe_result"></div>
+                    <div id="special_out"></div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                init_form();
+            });
+
+            function init_form() {
+                $('#input_area').hide();
+                $('#name_type').hide();
+                $('#the_name').hide();
+            }
+
+            $('#content').change(function() {
+                get_perms();
+            });
+
+            function set_disable(elem) {
+                var el = $(elem);
+
+                var myval = el.val(); // Get the value
+                el.data('orig', myval); // Store the value
+                el.val(''); // Clear the value
+                el.prop('disabled', true); // Disable element
+
+                return elem.length;
+            }
+
+            function set_enable(elem) {
+                var el = $(elem);
+
+                var is_enabled = el.is(':enabled');
+                if (is_enabled) {
+                    return -1;
+                }
+
+                var myval = el.data('orig'); // Get original data
+                el.val(myval); // reset the value
+                el.prop('disabled', false); // Enable the element
+
+                return el.length;
+            }
+
+            $('#directory').change(function() {
+                $('#file').prop('checked', false);
+
+                return true;
+            });
+
+            $('#file').change(function() {
+                $('#directory').prop('checked', false);
+
+                return true;
+            });
+
+            $("#the_name").change(function() {
+                if ($("#the_name").val()) {
+                    $('#input_area').show();
+                } else {
+                    $('#input_area').hide();
+                }
+                get_perms();
+            });
+
+            $('#user-owner').change(function() {
+                $('#its_a_group').prop('checked', false);
+                $('#user_part_group').show();
+            });
+
+            $('#group-owner').change(function() {
+                $('#user_part_group').hide();
+                $('#user_part_group').prop('checked', false);
+                $('#in_group').prop('checked', false);
+            });
+
+            $('#its_a_user').change(function() {
+                $('#its_a_group').prop('checked', false);
+                $('#name_type').show();
+                $('#name_type').html('User Name:');
+                $('#the_name').show();
+                $('#the_name').prop('placeholder', 'User name is...');
+                $('#other_things').show();
+            });
+
+            $('#its_a_group').change(function() {
+                $('#its_a_user').prop('checked', false);
+                $('#name_type').show();
+                $('#name_type').html('Group Name:');
+                $('#the_name').show();
+                $('#the_name').prop('placeholder', 'Group name is...');
+                $('#other_things').hide();
+                $('#other_things').prop(":checked", false);
+            });
+
+            function highlight_user(arg) {
+                if (arg) {
+                    $(".user-per-area").show();
+                    $('#user').css({
+                        'background-color': '#6eff54'
+                    });
+                    $('#ur').css({
+                        'background-color': '#6eff54'
+                    });
+                    $('#ur_result').css({
+                        'background-color': '#6eff54'
+                    });
+                    $('#uw').css({
+                        'background-color': '#6eff54'
+                    });
+                    $('#uw_result').css({
+                        'background-color': '#6eff54'
+                    });
+                    $('#ue').css({
+                        'background-color': '#6eff54'
+                    });
+                    $('#ue_result').css({
+                        'background-color': '#6eff54'
+                    });
+                    $(".group-per-area").hide();
+                    $(".other-per-area").hide();
+                    highlight_group(false);
+                    highlight_other(false);
+                } else {
+                    $('#user').css({
+                        'background-color': '#e1e1e1'
+                    });
+                    $('#ur').css({
+                        'background-color': '#e1e1e1'
+                    });
+                    $('#ur_result').css({
+                        'background-color': '#e1e1e1'
+                    });
+                    $('#uw').css({
+                        'background-color': '#e1e1e1'
+                    });
+                    $('#uw_result').css({
+                        'background-color': '#e1e1e1'
+                    });
+                    $('#ue').css({
+                        'background-color': '#e1e1e1'
+                    });
+                    $('#ue_result').css({
+                        'background-color': '#e1e1e1'
+                    });
+                }
+            }
+
+            function highlight_group(arg) {
+                if (arg) {
+                    $(".group-per-area").show();
+                    $('#group').css({
+                        'background-color': '#6eff54'
+                    });
+                    $('#gr').css({
+                        'background-color': '#6eff54'
+                    });
+                    $('#gr_result').css({
+                        'background-color': '#6eff54'
+                    });
+                    $('#gw').css({
+                        'background-color': '#6eff54'
+                    });
+                    $('#gw_result').css({
+                        'background-color': '#6eff54'
+                    });
+                    $('#ge').css({
+                        'background-color': '#6eff54'
+                    });
+                    $('#ge_result').css({
+                        'background-color': '#6eff54'
+                    });
+                    $(".user-per-area").hide();
+                    $(".other-per-area").hide();
+                    highlight_other(false);
+                    highlight_user(false);
+                } else {
+                    $('#group').css({
+                        'background-color': '#e1e1e1'
+                    });
+                    $('#gr').css({
+                        'background-color': '#e1e1e1'
+                    });
+                    $('#gr_result').css({
+                        'background-color': '#e1e1e1'
+                    });
+                    $('#gw').css({
+                        'background-color': '#e1e1e1'
+                    });
+                    $('#gw_result').css({
+                        'background-color': '#e1e1e1'
+                    });
+                    $('#ge').css({
+                        'background-color': '#e1e1e1'
+                    });
+                    $('#ge_result').css({
+                        'background-color': '#e1e1e1'
+                    });
+                }
+            }
+
+            function highlight_other(arg) {
+                if (arg) {
+                    $(".other-per-area").show();
+                    $('#other').css({
+                        'background-color': '#6eff54'
+                    });
+                    $('#or').css({
+                        'background-color': '#6eff54'
+                    });
+                    $('#or_result').css({
+                        'background-color': '#6eff54'
+                    });
+                    $('#ow').css({
+                        'background-color': '#6eff54'
+                    });
+                    $('#ow_result').css({
+                        'background-color': '#6eff54'
+                    });
+                    $('#oe').css({
+                        'background-color': '#6eff54'
+                    });
+                    $('#oe_result').css({
+                        'background-color': '#6eff54'
+                    });
+                    $(".group-per-area").hide();
+                    $(".user-per-area").hide();
+                    highlight_group(false);
+                    highlight_user(false);
+                } else {
+                    $('#other').css({
+                        'background-color': '#e1e1e1'
+                    });
+                    $('#or').css({
+                        'background-color': '#e1e1e1'
+                    });
+                    $('#or_result').css({
+                        'background-color': '#e1e1e1'
+                    });
+                    $('#ow').css({
+                        'background-color': '#e1e1e1'
+                    });
+                    $('#ow_result').css({
+                        'background-color': '#e1e1e1'
+                    });
+                    $('#oe').css({
+                        'background-color': '#e1e1e1'
+                    });
+                    $('#oe_result').css({
+                        'background-color': '#e1e1e1'
+                    });
+                }
+            }
+
+            function reset() {
+                var checks = document.getElementsByTagName("input");
+                for (var i = 0; i <= checks.length; i++) {
+                    if (checks[i].type == "text") {
+                        checks[i].textContent = "";
+                    } else if (checks[i].type == "checkbox") {
+                        checks[i].prop("checked", false);
+                    }
+                }
+            }
+
+            function get_perms() {
+                var is_user = $('#its_a_user').is(':checked');
+                var is_group = $('#its_a_group').is(':checked');
+                var in_group = $('#in_group').is(':checked');
+                var input_name = $('#the_name').val().toLocaleLowerCase().trim();
+                var yes = '&#9989;<br>';
+                var no = '&#10060;<br>';
+                var dir = $('#directory').is(':checked');
+                var filet = $('#file').is(':checked');
+                var username = $('#user-owner').val().toLocaleLowerCase().trim();
+                var groupname = $('#group-owner').val().toLocaleLowerCase().trim();
+                var type = dir ? 'directory' : filet ? 'file' : '';
+                var exe_on_dir = $('#file_parents').is(':checked');
+                var user_r = $('#user-read').is(':checked');
+                var user_w = $('#user-write').is(':checked');
+                var user_e = $('#user-execute').is(':checked');
+                var group_r = $('#group-read').is(':checked');
+                var group_w = $('#group-write').is(':checked');
+                var group_e = $('#group-execute').is(':checked');
+                var other_r = $('#other-read').is(':checked');
+                var other_w = $('#other-write').is(':checked');
+                var other_e = $('#other-execute').is(':checked');
+                var suid =  $('#suid').is(':checked');
+                var sgid = $('#sgid').is(':checked');
+                var sticky = $('#sticky-bit').is(':checked');
+
+                if ((is_user || is_group) && (username && groupname && input_name)) {
+
+                    if (type == 'file') {
+                        // Owner Permissions
+                        $('#user').html(
+                            '<p><h3>Follows user permissions</h3></p>'
+                        );
+                        $('#ur').html('<p><h4>Read the file</h4></p>');
+                        $('#ur_result').html('<p><h3>' + (user_r ? yes : no) + '</h3></p>');
+                        $('#uw').html('<p><h4>Modify the file</h4></p>');
+                        $('#uw_result').html(
+                            '<p><h3>' + (user_w ? (exe_on_dir ? yes : no) : no) + '</h3></p>',
+                        );
+                        $('#ue').html('<p><h4>Can execute the file</h4></p>');
+                        $('#ue_result').html(
+                            '<p><h3>' + (user_e ? (exe_on_dir ? yes : no) : no) + '</h3></p>',
+                        );
+
+                        // Group Permissions
+                        $('#group').html(
+                            '<p><h3>Follows group permissions</h3></p>',
+                        );
+                        $('#gr').html('<p><h4>Read the file</h4></p>');
+                        $('#gr_result').html(
+                            '<p><h3>' + (group_r ? yes : no) + '</h3></p>',
+                        );
+                        $('#gw').html('<p><h4>Modify the file</h4></p>');
+                        $('#gw_result').html(
+                            '<p><h3>' +
+                            (group_w ? (exe_on_dir ? yes : no) : no) +
+                            '</h3></p>',
+                        );
+                        $('#ge').html('<p><h4>Can execute the file</h4></p>');
+                        $('#ge_result').html(
+                            '<p><h3>' +
+                            (group_e ? (exe_on_dir ? yes : no) : no) +
+                            '</h3></p>',
+                        );
+
+                        // Other Permissions
+                        $('#other').html('<p><h3>Follows other permissions</h3></p>');
+                        $('#or').html('<p><h4>Read the file</h4></p>');
+                        $('#or_result').html(
+                            '<p><h3>' + (other_r ? yes : no) + '</h3></p>',
+                        );
+                        
+						$('#ow').html('<p><h4>Add, delete, or modify files</h4></p>');
+						
+                        $('#ow_result').html(
+                            '<p><h3>' +
+                            (other_w ? (exe_on_dir ? yes : no) : no) +
+                            '</h3></p>',
+                        );
+                        $('#oe').html('<p><h4>Can execute the file</h4></p>');
+                        $('#oe_result').html(
+                            '<p><h3>' +
+                            (other_e ? (exe_on_dir ? yes : no) : no) +
+                            '</h3></p>',
+                        );
+                    } else if (type == "directory") {
+                        // Owner Permissions
+                        $('#user').html(
+                            '<p><h3>Follows user permissions</h3></p>'
+                        );
+                        $('#ur').html('<p><h4>List file names</h4></p>');
+                        $('#ur_result').html('<p><h3>' + (user_r ? yes : no) + '</h3></p>');
+						
+						var write = '<p><h4>Add, delete, or modify files</h4></p>'
+						if (sticky) {
+							write += '<p>ONLY FILES OWED BY THE USER</p>';
+						}
+						$('#uw').html(write);
+                        $('#uw_result').html(
+                            '<p><h3>' +  (user_w ? (user_e ? (exe_on_dir ? yes : no) : no) : no) + '</h3></p>',
+                        );
+                        $('#ue').html('<p><h4>Traverse directory or perform actions</h4></p>');
+                        $('#ue_result').html(
+                            '<p><h3>' + (user_e ? (exe_on_dir ? yes : no) : no) + '</h3></p>',
+                        );
+
+                        // Group Permissions
+                        $('#group').html(
+                            '<p><h3>Follows group permissions</h3></p>'
+                        );
+                        $('#gr').html('<p><h4>List file names</h4></p>');
+                        $('#gr_result').html(
+                            '<p><h3>' + (group_r ? yes : no) + '</h3></p>',
+                        );
+						var write = '<p><h4>Add, delete, or modify files</h4></p>'
+						if (sticky) {
+							write += '<p>ONLY FILES OWED BY THE USER</p>';
+						}
+						$('#gw').html(write);
+                        $('#gw_result').html(
+                            '<p><h3>' +
+                            (group_w ? (group_e ? (exe_on_dir ? yes : no) : no) : no) +
+                            '</h3></p>',
+                        );
+                        $('#ge').html('<p><h4>Traverse directory or perform actions</h4></p>');
+                        $('#ge_result').html(
+                            '<p><h3>' +
+                            (group_e ? (exe_on_dir ? yes : no) : no) +
+                            '</h3></p>',
+                        );
+
+                        // Other Permissions
+                        $('#other').html('<p><h3>Follows other permissions</h3></p>');
+                        $('#or').html('<p><h4>List file names</h4></p>');
+                        $('#or_result').html(
+                            '<p><h3>' + (other_r ? yes : no) + '</h3></p>',
+                        );
+						var write = '<p><h4>Add, delete, or modify files</h4></p>'
+						if (sticky) {
+							write += '<p>ONLY FILES OWED BY THE USER</p>';
+						}
+						$('#ow').html(write);
+                        $('#ow_result').html(
+                            '<p><h3>' +
+                            (other_w ? (other_e ? (exe_on_dir ? yes : no) : no) : no) +
+                            '</h3></p>',
+                        );
+                        $('#oe').html('<p><h4>Traverse directory or perform actions</h4></p>');
+                        $('#oe_result').html(
+                            '<p><h3>' +
+                            (other_e ? (exe_on_dir ? yes : no) : no) +
+                            '</h3></p>',
+                        );
+                    }
+                    if (is_user && username && input_name) {
+                        if (username == input_name) {
+                            highlight_user(true)
+                        } else if (is_user && in_group) {
+                            highlight_group(true);
+                        } else {
+                            highlight_other(true);
+                        }
+
+                    } else if (is_group && groupname && input_name) {
+                        if (input_name == groupname) {
+                            highlight_group(true);
+                        } else {
+                            highlight_other(true);
+                        }
+                    } else if ((is_group || is_user) && (groupname || username) && input_name) {
+                        highlight_other(true);
+                    }
+                }
+            }
+
+        </script>
+    </div>
+</body>
+
+</html>

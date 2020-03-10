@@ -1,0 +1,499 @@
+<html>
+
+<head>
+    <title>IPTables rule generator</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+    <!--<link rel="stylesheet" type="text/css" media="screen" href="/css/bulma.css" />-->
+
+    <style>
+        @font-face {
+            font-family: 'Open Sans';
+            font-style: normal;
+            font-weight: 400;
+            src:
+                local('Open Sans'),
+                url('/css/fonts/open_sans/OpenSans-Regular-webfont.woff') format('woff');
+        }
+
+        @font-face {
+            font-family: 'Open Sans';
+            font-style: normal;
+            font-weight: 700;
+            src:
+                local('Open Sans Bold'),
+                url('/css/fonts/open_sans/OpenSans-Bold-webfont.woff') format('woff');
+        }
+
+        /* Best monospace font EVAR! */
+        /* http://blogs.adobe.com/typblography/2012/09/source-code-pro.html */
+        @font-face {
+            font-family: 'Source Code Pro';
+            font-style: normal;
+            font-weight: 400;
+            src:
+                local('Source Code Pro'),
+                local('SourceCodePro-Regular'),
+                url('/css/fonts/source_code_pro/source_code_pro.woff') format('woff');
+        }
+
+        @font-face {
+            font-family: 'Source Code Pro';
+            font-style: normal;
+            font-weight: 700;
+            src:
+                local('Source Code Pro Bold'),
+                local('SourceCodePro-Bold'),
+                url('/css/fonts/source_code_pro/source_code_pro_bold.woff') format('woff');
+        }
+
+        body {
+            background: url('/images/diagonal_waves.png');
+            padding: 10px;
+        }
+
+        body,
+        select {
+            font-family: 'Open Sans', serif
+        }
+
+        input,
+        textarea {
+            font-family: 'Source Code Pro', monospace;
+        }
+
+        textarea {
+            width: 100%;
+            height: 7em;
+        }
+
+        h2.title {
+            margin-top: 0;
+        }
+
+        .port {
+            width: 3em;
+        }
+
+        .ip {
+            width: 12em;
+        }
+
+        .left-space {
+            margin-left: 0.6em;
+        }
+
+    </style>
+</head>
+
+<body class="">
+    <div class="">
+        <h2 class="title">IPTables rule generator</h2>
+
+        <p>
+            A quick tool to generate iptables rules, because I can never remember the syntax. All of this (and more) is in the <a href="http://ipset.netfilter.org/iptables.man.html">man page</a>.
+        </p>
+        <p> Modified by Walter Cottrell (2020), because <u>fuck iptables</u>.</p>
+
+        <select id="in_type">
+            <option value="" selected="selected">-- Insert Type --</option>
+            <option value="-A" selected="">Append</option>
+            <option value="-I">Insert</option>
+        </select>
+
+        <select id="rule_chain">
+            <option value="" selected="selected">-- Rule Chain --</option>
+            <option value="INPUT" selected="">INPUT</option>
+            <option value="FORWARD">FORWARD</option>
+            <option value="OUTPUT">OUTPUT</option>
+            <option value="PREROUTING">PREROUTING</option>
+            <option value="POSTROUTING">POSTROUTING</option>
+        </select>
+
+        <input type="text" class="port left-space" id="li_num" style="display: none;" placeholder="1">
+
+        <select id="traffic_type" class="left-space">
+            <option value="" selected="selected">-- Traffic Type --</option>
+            <option value="ip">IP</option>
+            <option value="tcp" selected="">TCP</option>
+            <option value="udp">UDP</option>
+            <option value="both">TCP &amp; UDP</option>
+            <option value="icmp">ICMP</option>
+        </select>
+
+        <input type="text" class="ip left-space" id="src" placeholder="Src: 10.1.1.1/24">:<input type="text" class="port" id="src_port" placeholder="Port">
+
+        <input type="text" class="ip left-space" id="dst" placeholder="Dest: 10.2.1.1/24">:<input type="text" class="port" id="dst_port" placeholder="Port">
+
+        <div id="state" class="" style="display:inline-block;" title="Stateful inspection.">
+            <label><b>-m state?</b></label>
+            <input type="checkbox" id="add_state">
+        </div>
+
+        <div id="state_types" class="left-space" style="display:none;">
+            <div class="" style="display:inline-block;" title="NEW">
+                <label><b>NEW</b></label>
+                <input type="checkbox" id="add_new">
+            </div>
+            <div class="" style="display:inline-block;" title="ESTABLISHED">
+                <label><b>ES</b></label>
+                <input type="checkbox" id="add_es">
+            </div>
+            <div class="" style="display:inline-block;" title="RELATED">
+                <label><b>RE</b></label>
+                <input type="checkbox" id="add_re">
+            </div>
+            <div class="" style="display:inline-block;" title="INVALID">
+                <label><b>INV</b></label>
+                <input type="checkbox" id="add_inv">
+            </div>
+        </div>
+
+        <select id="action" class="left-space">
+            <option value="">-- Action --</option>
+            <option value="drop" selected="selected">DROP</option>
+            <option value="reject">REJECT</option>
+            <option value="accept">ACCEPT</option>
+        </select>
+
+        <div id="log" class="" style="display:inline-block;" title="Makes logging rule too.">
+            <label><b>Log?</b></label>
+            <input type="checkbox" id="add_log">
+        </div>
+
+        <select id="reject-with" class="left-space" style="display: none;">
+            <option value="">-- Reject-with --</option>
+            <option value="tcp-reset">tcp-reset</option>
+            <option value="icmp-net-unreachable">icmp-net-unreachable</option>
+            <option value="icmp-host-unreachable">icmp-host-unreachable</option>
+            <option value="icmp-port-unreachable">icmp-port-unreachable</option>
+            <option value="icmp-proto-unreachable">icmp-proto-unreachable</option>
+            <option value="icmp-net-prohibited">icmp-net-prohibited</option>
+            <option value="icmp-host-prohibited">icmp-host-prohibited</option>
+        </select>
+
+        <input type="text" style="display:none;" class="ip left-space" id="to_ip" placeholder="--to-(source/destinaion): 10.2.1.1/24">
+
+        <div style="margin-top: 1em;">
+            <div><b>Output:</b></div>
+            <textarea placeholder="" id="output"></textarea>
+        </div>
+
+        <div class="" title="Makes oppsite rule to allow bi-directional comms.">
+            <label><b>Compliment rule:</b></label>
+            <input type="checkbox" id="add_comp">
+        </div>
+        <div class="" title="Show the full command vs the shortend command for /etc/sysconfig/iptables">
+            <label><b>Full command:</b></label>
+            <input type="checkbox" id="full_cmd">
+        </div>
+        <div class="" title="add sudo before command. Only works if above box is also checked.">
+            <label><b>Add sudo:</b></label>
+            <input type="checkbox" id="add_sudo">
+        </div>
+
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            init_form();
+            set_input_disabled();
+        });
+
+        function init_form() {
+            $('input').add('select').change(function() {
+                set_input_disabled();
+
+                var rules = get_rules();
+                $('#output').val(rules);
+            });
+        }
+
+        function set_input_disabled() {
+            var type = $("#traffic_type").val();
+            var is_udp_tcp = (type === "tcp" || type === "udp" || type === "both");
+
+            var elems = ["#src_port", "#dst_port"];
+
+            if (is_udp_tcp) {
+                for (i in elems) {
+                    var elem = elems[i];
+                    set_enable(elem);
+                }
+            } else {
+                for (i in elems) {
+                    var elem = elems[i];
+                    set_disable(elem);
+                }
+            }
+        }
+
+        function set_disable(elem) {
+            var el = $(elem);
+
+            var myval = el.val(); // Get the value
+            el.data('orig', myval); // Store the value
+            el.val(''); // Clear the value
+            el.prop("disabled", true); // Disable element
+
+            return elem.length;
+        }
+
+        function set_enable(elem) {
+            var el = $(elem);
+
+            var is_enabled = el.is(":enabled");
+            if (is_enabled) {
+                return -1;
+            }
+
+            var myval = el.data('orig'); // Get original data
+            el.val(myval); // reset the value
+            el.prop("disabled", false); // Enable the element
+
+            return el.length;
+        }
+        $('#in_type').change(function() {
+            if ($("#in_type").val() == "-I") {
+                $('#li_num').css('display', 'inline-block');
+            } else {
+                $('#li_num').css('display', 'none');
+            }
+        });
+
+        $('#add_state').change(function() {
+            if ($("#add_state").is(":checked")) {
+                $('#state_types').css('display', 'inline-block');
+            } else {
+                $('#state_types').css('display', 'none');
+            }
+        });
+        $('#action').change(function() {
+            if ($("#action").val() == "reject") {
+                $('#reject-with').css('display', 'inline-block');
+            } else {
+                $('#reject-with').css('display', 'none');
+            }
+
+
+            if ($("#action").val() == "dnat" | $("#action").val() == "snat") {
+                $('#to_ip').css('display', 'inline-block');
+            } else {
+                $('#to_ip').css('display', 'none');
+            };
+
+        });
+
+        function change_action() {
+            if ($("#action").val() == "reject") {
+                $('#reject-with').css('display', 'inline-block');
+            } else {
+                $('#reject-with').css('display', 'none');
+            }
+
+            if ($("#action").val() == "log") {
+                $('#log_sev').css('display', 'inline-block');
+                $("#add_log").css("display", "none");
+            } else {
+                $('#log_sev').css('display', 'none');
+                $("#add_log").css("display", "inline-block");
+            };
+
+
+            if ($("#action").val() == "dnat" | $("#action").val() == "snat") {
+                $('#to_ip').css('display', 'inline-block');
+            } else {
+                $('#to_ip').css('display', 'none');
+            };
+
+        };
+
+        $('#rule_chain').change(function() {
+            $('#action').empty()
+            var action = $("#rule_chain").val();
+            if (action == "PREROUTING") {
+                $('#action').append($('#action').append('<option value="snat" selected="selected">SNAT</option><option value="masquerade" selected="selected">MASQUERADE</option>'));
+            } else if (action == "POSTROUTING") {
+                $('#action').append('<option value="dnat" selected="selected">DNAT</option><option value="masquerade" selected="selected">MASQUERADE</option>');
+            } else {
+                $('#action').append('<option value="">-- Action --</option><option value="drop" selected="selected">DROP</option><option value="reject">REJECT</option><option value="accept">ACCEPT</option><option value="log">LOG</option>');
+            }
+            change_action();
+        });
+
+
+
+        function get_rules() {
+            var type = $("#traffic_type").val();
+            var src = $("#src").val();
+            var sport = parseInt($("#src_port").val());
+            var make_dupe = $("#add_comp ").is(":checked");
+            var logging = $("#add_log").is(":checked");
+
+            if (type === "both") {
+                type = "tcp";
+                var both = true;
+            }
+
+            var dest = $("#dst").val();
+            var dport = parseInt($("#dst_port").val());
+            var action = $("#action").val();
+            var chain = $("#rule_chain").val();
+            var in_mode = $("#in_type").val();
+            var li_num = $("#li_num").val();
+            var reject_with = $("#reject-with").val();
+            var to_ip = $("#to_ip").val();
+            var state = $("#add_state").is(":checked");
+            var ne = $("#add_new").is(":checked");
+            var es = $("#add_es").is(":checked");
+            var re = $("#add_re").is(":checked");
+            var inv = $("#add_inv").is(":checked");
+
+            var rule = "";
+            if ($("#add_sudo").is(":checked") && $("#full_cmd").is(":checked")) {
+                rule += 'sudo ';
+            }
+            if ($("#full_cmd").is(":checked")) {
+                rule += 'iptables ';
+            }
+
+            rule += in_mode + " ";
+            if (chain && ["INPUT", "OUTPUT", "FORWARD"].includes(chain)) {
+                rule += chain + " ";
+            } else {
+                rule += chain + " -t nat ";
+            }
+            if (li_num && in_mode == "-I") {
+                rule += li_num + " ";
+            }
+
+            if (type && type !== 'ip') {
+                rule += "-p " + type + " ";
+            }
+            if (type && type === 'ip') {
+                rule += "--protocol all ";
+            }
+            if (type === 'icmp') {
+                rule += "--icmp-type any ";
+            }
+
+            if (src) {
+                rule += "-s " + src + " ";
+            }
+            if (sport) {
+                rule += "--sport " + sport + " ";
+            }
+
+            if (dest) {
+                rule += "-d " + dest + " ";
+            }
+            if (dport) {
+                rule += "--dport " + dport + " ";
+            }
+            if (state && (es | ne | inv | re)) {
+                rule += "-m state --state "
+            }
+            var state_str = "";
+            if (state && ne) {
+                state_str += "NEW"
+            }
+            if (state && es) {
+                state_str += ",ESTABLISHED"
+            }
+            if (state && re) {
+                state_str += ",RELATED"
+            }
+            if (state && inv) {
+                state_str += ",INVALID"
+            }
+            if (state_str[0] == ',') {
+                rule += state_str.slice(1, state_str.lenth) + " ";
+            } else {
+                rule += state_str + " ";
+            }
+            if (action) {
+                rule += " -j " + action.toUpperCase() + " ";
+            }
+            if (action && action == "reject") {
+                rule += "--reject-with " + reject_with;
+            }
+            if (action && action == "dnat") {
+                rule += "--to-destination " + to_ip;
+            }
+            if (action && action == "snat") {
+                rule += "--to-source" + to_ip;
+            }
+
+            rule = rule.trim();
+            oppsite_rule
+
+            function oppsite_rule(table, rule) {
+                var src_table
+                if (["INPUT", "OUTPUT"].includes(table)) {
+                    src_table = table == "INPUT" ? "OUTPUT" : "INPUT";
+                } else if (table == "FORWARD") {
+                    src_table = table;
+                }
+                var tmp_rule = rule;
+                tmp_rule = tmp_rule.replace(table, src_table);
+                var indexs = tmp_rule.indexOf(" -s");
+                var indexd = tmp_rule.indexOf(" -d");
+                var order_pt1 = indexs > indexd ? " -s" : " -d";
+                var order_pt2 = order_pt1 == " -s" ? " -d" : " -s";
+                tmp_rule = tmp_rule.split(order_pt1)
+                var tmp_rule_pt1 = tmp_rule[0].replace(order_pt2, order_pt1);
+                var tmp_rule_pt2 = order_pt2 + " " + tmp_rule[1];
+                tmp_rule = tmp_rule_pt1.concat(tmp_rule_pt2);
+                if (rule.indexOf("--dport") != -1 ) {
+                    
+                    var indexsp = tmp_rule.indexOf("--sport");
+                    if (indexsp != -1) {
+                        var broken = tmp_rule.split("--sport");
+                        var broken_pt1 = broken[1].replace("--dport", "--sport");
+                        var tmp_rule = broken[0] + "--dport " + broken_pt1;
+                    }
+                } else {
+                    tmp_rule = tmp_rule.replace("--dport", "--sport");
+                }
+				if ( rule.indexOf("NEW") != -1) {
+					tmp_rule = tmp_rule.replace("NEW,", "");
+				}
+
+                if (both) {
+                    tmp_rule = tmp_rule.replace(/\btcp\b/, "udp");
+                }
+                rule += "\n" + tmp_rule
+
+                return rule;
+            };
+
+            function add_log_rules(rules) {
+                var lines = rules.split("\n");
+                var new_rules = "";
+                for (var i = 0; i < lines.length; i++) {
+                    var line = lines[i];
+                    new_rules += line.split("-j")[0] + " -j LOG \n" + lines[i] + "\n";
+                }
+                return new_rules;
+            }
+            // If we're doing both we clone the rule, and change TCP to UDP
+            // and make two separate rules
+            if (make_dupe && action == "accept") {
+                rule = oppsite_rule(chain, rule);
+            };
+            if (logging && action != "") {
+                rule = add_log_rules(rule);
+            }
+
+
+            // -A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT
+            rule = rule.replace(/\s+/, ' ');
+
+            return rule;
+        }
+
+    </script>
+</body>
+
+</html>
