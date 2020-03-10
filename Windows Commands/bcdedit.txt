@@ -1,0 +1,5 @@
+#### Rename boot entriy description
+	bcdedit /set {GUID} description "NAME"
+	
+#### Enable DEP protection on a boot partition.
+	bacedit /set <BootPartitionName> nx <alwayson|alwaysoff|optin|optout>

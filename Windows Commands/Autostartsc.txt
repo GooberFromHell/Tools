@@ -1,0 +1,13 @@
+TIMES ARE IN LOCAL TIME CONVERT IT TO UTC TIME
+#### Check system boot autorun startup.
+	autorunsc -b | more
+	
+#### Check appinit_dllls
+	autorunsc -d
+	
+#### Check startups for users.
+	autorunsc <Username> | more
+	
+#### Help find Windows Version
+  ## Look at versions of the programs.
+	autorunsc 

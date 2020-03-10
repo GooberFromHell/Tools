@@ -1,0 +1,8 @@
+#### Get all audit policies
+auditpol /get /category:*
+
+#### Change subcategory policy
+auditpol /set /subcategory:"<SubCategoryName>","<SubCategoryName>" /failure:<enable|disable> /success:<enable|disable>
+
+#### Check if Auditing is enabled.
+	psexec -s reg query "HKEY_LOCAL_MACHINE\Security\Policy\PolAdtEv"

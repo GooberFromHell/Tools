@@ -1,0 +1,4 @@
+must use lowercase permission flags.
+
+#### Grant group access
+	cacls <File or Folder> /e /g <GroupName>:f
