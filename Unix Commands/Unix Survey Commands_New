@@ -1,43 +1,70 @@
------ Login Shells
-	ps -elf | tr -s " " | cut -d " " -f 3,4,5,13,15- | grep -
-	
------ Check /etc/profile, ~/.bash_profile, ~/.bashrc, ~/.bach_login, ~/.bash_logout, /etc/login
+	----- Login Shells
+		ps -elf | tr -s " " | cut -d " " -f 3,4,5,13,15- | grep -
 
------ Dump superblock on device mounts
-	dumpe2fs <FullPathToDevicePartition>  (dumpe2fs /dev/sda1)
-	
------ Check for masked directories/files that have been mounted over.
-	mount (look for any oddy names mount points)
-	
------ Check /var/tmp for any files trying to survive reboots
-	ls -la /var/tmp
-	
------ Look at the linked rc scripts of the current run level. Should be to somthing in /etc/rc.d/init.d
-	ls -la /etc/rc.d/rc$(runlevel | cut -d' ' -f2).d | grep -v init\.d
-	
------ Same as above but for all rc.d directories/runlevels
-	find -l /etc/rc.d -type l -ls | grep -v init\.d
-	
------ Check shells with setuid or setgid for privescalation.
+	----- Check /etc/profile, ~/.bash_profile, ~/.bashrc, ~/.bach_login, ~/.bash_logout, /etc/login
 
------ Check xinet.d services
-	grep disable /etc/xinetd.d/*|grep no
-	
------ Might help find some bad stuff NOT ALL INCLUSIVE!
-	find <BinaryDirectory> -type f -exec rpm -q --whatprovides \{\} \; | grep "owned"
-	
------ Files with custom logging facilities:
-	find /etc -type f -exec grep -H SyslogFacility \{\} \;
-	
------ Find installed packages on system.
-	grep -i install /var/log/{rpm*,yum*}
-	
------ Checking nsswitch.conf lib files for back strings:
-	strings /lib/libnss_* 2>/dev/null| grep /etc
-	
------ Finding a spesfic users creation date based on time
-	ausearch -x useradd -i | grep "MM/DD/YYYY HH:MM:SS"
-	
+	----- Dump superblock on device mounts
+		dumpe2fs -ob <FullPathToDevicePartition>  (dumpe2fs -ob /dev/sda1)
+
+	----- Check for masked directories/files that have been mounted over.
+		mount (look for any oddy names mount points)
+
+	----- Check /var/tmp for any files trying to survive reboots
+		ls -la /var/tmp
+
+	----- Look at the linked rc scripts of the current run level. Should be to somthing in /etc/rc.d/init.d
+		ls -la /etc/rc.d/rc$(runlevel | cut -d' ' -f2).d | grep -v init\.d
+
+	----- Same as above but for all rc.d directories/runlevels
+		find -l /etc/rc.d -type l -ls | grep -v init\.d
+
+	----- Check shells with setuid or setgid for privescalation.
+
+	----- Check xinet.d services
+		grep disable /etc/xinetd.d/*|grep no
+
+	----- Might help find some bad stuff NOT ALL INCLUSIVE!
+		find <BinaryDirectory> -type f -exec rpm -q --whatprovides \{\} \; | grep "owned"
+
+	----- Files with custom logging facilities:
+		find /etc -type f -exec grep -H SyslogFacility \{\} \;
+
+	----- Find installed packages on system.
+		grep -i install /var/log/{rpm*,yum*}
+
+	----- Checking nsswitch.conf lib files for back strings:
+		strings /lib/libnss_* 2>/dev/null| grep /etc
+
+	----- Finding a spesfic users creation date based on time
+		ausearch -x useradd -i | grep "MM/DD/YYYY HH:MM:SS"
+
+	----- locate files differences following updates or installations
+		locate -w > file1; locate -ew > file2; diff file1 file2
+
+	------ Find files created today.
+		find <path> -daystart -ctime 0 -print
+
+	----- Finding process with ease
+		ps -e -ocomm,args=args,ppid,pid,svuser,group,wchan,fgin,tpgid
+
+	----- Convert column in file to human date time.
+		cat <FileName> | awk -F":" '{%2=strftime("%Y-%m-%dd %H:%M:%S", $2); print %0}'
+
+	----- Find in malciious processes that are not part of packages
+		rpm -q --whatprovides `find -L /proc/*/exe -exec readlink \{\} \;` | sort -u
+
+	----- find modified package files
+		rpm -qaV
+
+	----- get xfs superblock
+		xfs_db -rF /dev/sda1 -c sb -c p
+		xfs_info
+
+	----- Grep for firewall logging of iptables
+		lsof <iptables PID>; grep -i "\*\.\*|\.warn|kern\." /etc/rsyslog.conf
+
+	----- Interactive loggedin users
+		file=$(egrep "^passwd" /etc/nsswitch.conf | tr -s ' ' | cut -d' ' -f 2); users_with_passwords=$(($(echo cat /etc/shadow) && $(echo getent shadow)) | awk -F':' '{if ($2 ~ /^\$/) print($1" "$2)}' | sort -u | awk '{print($1)}'); for user in $users_with_passwords; do echo $(getent -s $file passwd | egrep "^$user" | awk -F':' '{if ($7 ~ /^\//) print($1" - "$7" can interactivly login") }'); done; 
 
 ##### Systemd
 		
@@ -52,9 +79,33 @@
 		
 	----- Get current running target
 		systemctl list-units -t target (look for the most recent user enabled target)
-	
+		systemctl list-units --type target | egrep "eme|res|gra|mul" | head -1
+		
 	----- Search unit files for string
 		egrep -R <String> /usr/lib/systemd/system
+		
+	
+##### LOGGING
+	
+	----- Find files where an ip is being logged.
+		find / -type f,others ! -path '/proc*' ! -path '/dev*' -exec grep -il \{\} \; 2>/dev/null
+		find / -type f -mount -daystart -ctime 0 -exec grep "IPADDRESS" \{\} \; 2>/dev/null
+		
+	----- Test logging locations
+		logger -p kern.warn hihi
+	
+	----- ssh sessions
+		egrep "session opened for user" /var/log/secure (Might be somewhere else too)
+
+	----- new login session
+		grep "New session.*?of user" /var/log/messages (Might be somewhere else too)
+
+
+	----- pam log events grep strings
+		grep "Accepted password" /var/log/*
+		grep "Failed password" /var/log/*
+		grep "Password changed" /var/log/*
+
 	
 ##### SMF
 
@@ -69,7 +120,7 @@
 		svcs -a | egrep 'online|legacy_run.*rc[0123S]_d'
 	
 	----- ports to peers and processes
-		ptree -a | awk '{print $1}' | xargs pfiles | egrep '(^[0-9]|peername|sockname)'
+		pfiles `pgrep [^0-9]` | egrep '(^[0-9]|peername|sockname)'
 		
 	----- current milestone. (One witht he heighet run time)
 		svcs | grep milestone* 
@@ -91,3 +142,5 @@
 		grep "SunOS Release <SolarisVersion>" /var/adm/messages
 		grep "Copyright" /var/adm/messages
 		
+	----- Processes fancy print
+		pushd /proc; for p in `find * -type d -prune`; do pfiles $p | grep port >> /tmp/ports && echo PID: $p >> /tmp/ports;done ; popd
