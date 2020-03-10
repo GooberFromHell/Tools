@@ -8,6 +8,22 @@
 #### DO NOT ASSUME ANYTHING!
 !!!
 
+<!-- toc -->
+
+- [check file permissions for all directories leading to FileName.](#check-file-permissions-for-all-directories-leading-to-FileName)
+- [SSH logging from linux](#SSH-logging-from-linux)
+- [get all user login times.](#get-all-user-login-times)
+- [Writes to the Master Boot Record on the boot device.](#Writes-to-the-Master-Boot-Record-on-the-boot-device)
+- [Compare Boot directory files to the MBR.](#Compare-Boot-directory-files-to-the-MBR)
+- [get all user login shells](#get-all-user-login-shells)
+- [display all processes cwd and _ environments. Good for find an executables actual running directory. (kinda buggy but still works)](#display-all-processes-cwd-and-_-environments-Good-for-find-an-executables-actual-running-directory-kinda-buggy-but-still-works)
+- [Solaris get process to port translation.](#Solaris-get-process-to-port-translation)
+- [Solaris find port usage.](#Solaris-find-port-usage)
+- [List all users cron jobs](#List-all-users-cron-jobs)
+- [List all /var/log files used my active processes.](#List-all-varlog-files-used-my-active-processes)
+- [List file created near the same time.](#List-file-created-near-the-same-time)
+
+<!-- tocstop -->
 #### check file permissions for all directories leading to FileName.
 ```Shell
 namei -l </Full/Path/To/The/file>
@@ -67,7 +83,8 @@ for user in `getent passwd | awk -F':' '{ print $1}'`; do crontab -u $user -l; d
 
 #### List all /var/log files used my active processes.
 ```Shell
-cd /proc; for pid in `find * -maxdepth 1 -type d -name "fd" -prune`; do ls -l /proc/$pid/. | grep /var/log && echo $pid" -------------Above this line--------------" ;  done;
+cd /proc; for pid in `find * -maxdepth 1 -type d -name "fd" -
+`; do ls -l /proc/$pid/. | grep /var/log && echo $pid" -------------Above this line--------------" ;  done;
 ```
 
 #### List file created near the same time.
