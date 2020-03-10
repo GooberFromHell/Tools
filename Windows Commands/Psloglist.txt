@@ -1,0 +1,28 @@
+
+#### Disable powershell logging the easy way.
+	Get-Module | ForEach {$_.LogPipelineExecutionDetails = $False}
+
+#### Find events from a spesfic user
+	1) Get users SID
+		wmic user account where name="<Username>" get sid
+	2)	find events
+		psloglist -s -t "\t" -n 20 <LogFile> | findstr /n /i .*<SID>.*
+		
+#### Find all events from a user.
+	psloglist -s -t "\t" security | findstr /n /i .*<SID>.*
+	
+#### Another way
+	psloglist -s -t "\t" -i 4625 Security 
+	
+#### Another way 
+	psloglist -s -t "\t" security | findstr /n /i ".*Failed.*"
+	
+#### Find events related to when a user was created:
+	psloglist -s -t "\t" -a "<TimeUserWasCreated>" security | findstr /i "<SID>"
+	
+#### Find events related to when a user was created:
+	psloglist -i <4720|632> security | findstr /i "<SID>"
+	
+#### Force powershell module to reload.
+	Get-Module | Select Name, LogPipelineExecutionDetails
+	import-module <ModuleName> -force

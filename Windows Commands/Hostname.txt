@@ -1,0 +1,2 @@
+## Get hostname of the system.
+	hostname

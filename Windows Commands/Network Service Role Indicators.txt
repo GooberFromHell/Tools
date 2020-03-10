@@ -1,0 +1,8 @@
+Possible Exchange Server:
+	tcp 25 (SMTP)
+	tcp 80 (HTTP)
+	tcp 135, 445 (RPCSS, SMB)
+	tcp 593 (RPC over HTTP)
+	tcp 691 (Exchange Routing)
+	tcp 6001, 6002, 6004 (Exchange Services for Information Store)
+	tcp 1490 (mxsvr.exe)

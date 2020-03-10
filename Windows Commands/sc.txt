@@ -1,0 +1,8 @@
+#### Query all services on remote machine	
+	sc \\xp.ops.local queryex
+	
+#### Find all dependencies for a service.
+	sc qc <SERVICE_NAME>
+	
+#### Find all services dependant on a service.
+	sc enumdepend <SERVICE_NAME>

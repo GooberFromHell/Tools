@@ -1,0 +1,11 @@
+#### Query services on remote computer
+	psservice \\xp.ops.local -u xp\administrator -p L33tHax0r query -s all
+	
+#### Query specific service on remote computer.
+	psservice \\xp.ops.local -u xp\administrator -p L33tHax0r query "<SERVICE_DISPLAY_NAME or SERVICE_NAME>"
+	
+#### Set start type of service
+	psservice setconfig <SERVICE_NAME> <auto, disabled, demand> 
+	
+#### View service assigned permissions.security discriptor
+	psservice security <SERVICE_NAME>

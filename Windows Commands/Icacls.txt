@@ -1,0 +1,28 @@
+REMEMBER THINK ABOUT THE PERMISSION NEEDED AND CHANGE BASE ON INHERITANCE IF NEEDED.
+
+Permission identifiers:
+	N	No access
+	F	Full Control
+	M	Modify
+	RX	Read and Execute
+	R	read-only
+	W	Write-only
+	D	Delete access
+
+
+#### Remove user or groups permissions from a file or directory.
+	icacls <FullPathtoDirOrFile> /remove "<Username/Groupname>"
+	
+#### Add user or groups permissions from a file or directory.
+	icacls <FullPathtoDirOrFile> /remove "<Username/Groupname>"
+	
+#### Diable inheritance for file or directory
+		icacls <FullPathtoDirOrFile> /inheritance:d
+
+#### Add inheritance for user/group to file or directory
+	icacls <FullPathToDirorFile> /grant <Username/Groupname>:(OI)(CI)
+	
+#### Remove all inheritance from file or directory
+	icacls <FullPathToDirorFile> /inheritance:r 
+
+

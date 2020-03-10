@@ -1,0 +1,13 @@
+tasklist					## Look at process order
+pslist						## Look at Process memory
+netstat -ano				## Look at Listening/Connected processes
+listdlls |find "Command"	## Look at executed commands for suspicious executable paths and commandline arguments
+autorunsc					## Look at system auto start services and programs
+autorunsc -d				## Look at system appinit_dlls for persistence
+autorunsc <UserName>		## Look at each users auto start services and programs
+
+							## if any thing is found, eximine the directory they are in. 
+							## Check for files with the same creation date as the executable, it is not legitimate.
+							
+							
+							## Check for suspicious driver information

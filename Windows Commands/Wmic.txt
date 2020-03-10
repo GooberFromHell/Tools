@@ -1,0 +1,42 @@
+#### Get process executable paths:
+	wmic process get executablepathget 
+
+#### Get directory/folder information
+	wmic fsdir where name="<PathToDirectory>" get /format:list
+
+#### Get infrormation on unknown proceses, remember to escape the "\" to "\\"
+	wmic datafile where name="<FullPathToExecutalbe.exe>" get /format:list
+
+#### Get process execution arguments at the command line.
+	wmic process where name="<ProcessExecutableName>" get name, commandline
+
+#### Get process execution directory
+	wmic process where name='<executable.exe>' get executablePath
+
+#### Get parent process id of a process.
+	wmic process where name="<ExecutableName.exe" get name,parentprocessid
+
+#### Get Timestamps
+	wmic fsdir where name="<PathToDirectory>" get creationdate,lastmodified,lastaccessed
+	wmic datafile where name="<PathToFile>" get creationdate,lastmodified,lastaccessed
+
+#### Get installed hotfixes
+	wmic path win32_quickfixengineering get hotfixid
+	
+### Get alias target/class
+	wmic <alias_name> /?
+	wmic Alias <alias_name> list brief
+	
+#### Get Group SIDs on the system.
+	wmic group get Caption, InstallDate, LocalAccount, Domain, SID, Status
+	
+#### Get User SIDS on the system.
+	wmic useraccount get name, SID LocalAccount, Status
+	
+	
+	
+	
+	
+	Initial access consists of penetrating any defensive security and gaining the ability
+to run commands or other software on one of the target’s computers or network
+devices.

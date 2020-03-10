@@ -1,0 +1,7 @@
+# List process execution path
+tasklist /svc
+# list ALL Process loaded dependencies
+tasklist /m
+# list ONE Process loaded dependencies
+tasklist /M /FI "PID eq <ProcessID>"
+

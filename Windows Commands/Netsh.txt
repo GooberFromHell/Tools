@@ -1,0 +1,66 @@
+#### Search for rules NOT USING NETSH
+	powershell select-string -pattern "name" -path <FileWithRules> -content 0,12
+
+#### Get all firewall rules.
+	netsh advfirewall firewall show rule name=all
+	
+#### disable Windows Firewall policies for the Domain, Private, Public.
+	netsh advfirewall set allprofiles state off
+	
+#### Output all rules to text file for searching with findstr.
+	netsh advfirewall firewall show rule status=enabled profile=any name=all > fwrules.txt
+	
+#### enable/disable rule group.
+	netsh advfirewall firewall set rule group="<GroupNam>" new enable=no
+	netsh advfirewall firewall set rule group="<GroupName>" new enable=yes
+	
+#### Enable RDP.
+	netsh advfirewall firewall set rule group="remote desktop" new enable=Yes
+
+#### Create a new rule.
+	netsh advfirewall filewall add rule name="<Name>" dir=<in | out> protocol=<tcp|udp> localport=<LocalPort> remoteport=<RemotePort> remoteip=<RemoteIp> profile=<private|publuc|domain|any> action=<allow|block> 
+	
+#### Delete a rule
+	netsh advfirewall firewall delete rule name="<RuleName>"
+	
+#### enable/disable group rules for more than one profile>
+	netsh advifrewall set <Profile>domainprofile status on
+	netsh advfirewall firewall set rule name="File and Printer Shareing" new enable=yes
+	netsh advifrewall set domainprofile status off
+
+#### Add rule to allow inbound Http port 80.
+	netsh advfirewall firewall add rule name="HTTP In" dir=in action=allow profile=public protocol=TCP localport=80 enable=yes
+	
+#### View firewall logging policy
+	netsh firewall show logging
+	
+#### View firewall allowed applications
+	netsh firewall show allowedprogram
+	
+netsh advfirewall show allprofiles
+netsh advfirewall set allprofiles state off
+netsh advfirewall set allprofiles state on
+netsh advfirewall show currentprofile
+netsh advfirewall set currentprofile state off
+netsh advfirewall set currentprofile state on
+
+#### Search for rules NOT USING NETSH
+	powershell select-string -pattern "name" -path <FileWithRules> -content 0,12
+
+#### Printer group commands
+	netsh advfirewall firewall set rule name="File and Printer Sharing (NB-Session-In)" new enable=yes profile=domain,public
+	netsh advfirewall firewall set rule name="File and Printer Sharing (NB-Session-Out)" new enable=yes profile=domain,public
+	netsh advfirewall firewall set rule name="File and Printer Sharing (SMB-In)" new enable=yes profile=domain,public
+	netsh advfirewall firewall set rule name="File and Printer Sharing (SMB-Out)" new enable=yes profile=domain,public
+	netsh advfirewall firewall set rule name="File and Printer Sharing (NB-Name-In)" new enable=yes profile=domain,public
+	netsh advfirewall firewall set rule name="File and Printer Sharing (NB-Name-Out)" new enable=yes profile=domain,public
+	netsh advfirewall firewall set rule name="File and Printer Sharing (NB-Datagram-In)" new enable=yes profile=domain,public
+	netsh advfirewall firewall set rule name="File and Printer Sharing (NB-Datagram-Out)" new enable=yes profile=domain,public
+	netsh advfirewall firewall set rule name="File and Printer Sharing (Spooler Service - RPC)" new enable=yes profile=domain,public
+	netsh advfirewall firewall set rule name="File and Printer Sharing (Spooler Service - RPC-EPMAP)" new enable=yes profile=domain,public
+	netsh advfirewall firewall set rule name="File and Printer Sharing (Echo Request - ICMPv4-In)" new enable=yes profile=domain,public
+	netsh advfirewall firewall set rule name="File and Printer Sharing (Echo Request - ICMPv4-Out)" new enable=yes profile=domain,public
+	netsh advfirewall firewall set rule name="File and Printer Sharing (Echo Request - ICMPv6-In)" new enable=yes profile=domain,public
+	netsh advfirewall firewall set rule name="File and Printer Sharing (Echo Request - ICMPv6-Out)" new enable=yes profile=domain,public
+	netsh advfirewall firewall set rule name="File and Printer Sharing (LLMNR-UDP-In)" new enable=yes profile=domain,public
+	netsh advfirewall firewall set rule name="File and Printer Sharing (LLMNR-UDP-Out)" new enable=yes profile=domain,public

@@ -1,0 +1,68 @@
+# Survey Commands
+	
+--------------System info ----------------------
+	date /t
+	hostname
+	ipconfig /all
+	systeminfo
+	reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion"
+	pslist
+	tasklist /svc
+	wmic process get /format:list
+	netstat -ano | findstr /i "LIST"
+	netstat -ano | findstr /i "EST"
+	netstat -ano | findstr /i "UDP"
+	
+---------------- Processes --------------
+	get-wmiobject win32_process | select name,processid,@{name="Started";expression={$_.ConvertToDateTime($_.CreationDate)}}
+	get-wmiobject win32_process | select name,processid,@{name="Started";expression={DateTime -Uformatt ($_.ConvertToDateTime($_.CreationDate).ToUniversalTime()}}
+	
+	1) svchost should not be starting after explorer.exe, look at start times.
+	2) Capitalization matters in the service and executable names.
+	
+---------------- Find Anti-virus products ------------------
+	wmic /node:localhost /namespace:\\root\securitycenter2 path antivirusproduct get displayname /format:list
+
+---------------- Users ------------------
+	reg query "HKLM\system\CurrentControlSet\Control\Hivelist"
+	
+------------- Loook in common directories -------------
+	dir C:\Windows\Temp
+	dir C:\temp
+	dir C:\Users\*\
+	dir C:\Users\*\Desktop
+	dir C:\
+	
+------------- Auto start processes ------------------
+	wmic job get
+	wmic startup get /format:list
+	autorunsc -t -a * | more   <- UTC with -t
+	autostart * | more
+	
+------------- Look in run keys ----------------------
+	REG QUERY "HKEY_LOCAL_MACHINE\system\currentcontrolset\control\timezoneinformtion" /s
+	reg query "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\Windows" <-- could be malware trying to load into every process.
+	reg query "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\WinLogon" /v shell
+	reg query "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run"
+	reg query "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run"
+	reg query "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\RunOnce"
+	reg query "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\RunOnce"
+	
+	reg query "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Telnet" <- telnet configuration data
+	
+	autorunsc -a "<KEY>" > reg.txt && find /n /i "<KEY>" reg.txt  <- find last modified date for registry key.
+	
+------------- Application allowed through the firewall ------------
+	netsh firewall show allowedprogram
+	
+--------------Find and count files --------------
+	dir "*.<FileExtention>" /s /b | find /c /v ""
+	wmic datafile where extension='<FileExtention>' get name,filename /format:list
+	wmic datafile where extension='<FileExtention>' get name,filename /format:list
+	
+--------------- Process loaded Dlls ----------------
+	listdlls <ProcessName>		or 		tasklist /m /fi "ImageName eq <ProcessName.exe>"
+	
+--------------- Unverified services ---------------- (Look for the services with no publisher or version number)
+	In npp, use this regex.
+	\r\n\s{2}\w*?\r\n(\s{4}.*?\r\n){4}\s{2}\S

@@ -1,0 +1,2 @@
+# Key to enable file Last Access Timestamps.
+HKLM\System\CurrentControlSet\Control\File system\NtfsDisableLastAccessUpdate = <diabled is 1, enable is 0>

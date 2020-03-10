@@ -1,0 +1,2 @@
+#### Get host domain/workgroup, look for any <00> groups.
+	nbtstat -rn

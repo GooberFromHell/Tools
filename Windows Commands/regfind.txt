@@ -1,0 +1,8 @@
+Remote Computer
+regfind -m \\(COMPUTERNAME)\
+
+#### Time Zone Information
+regfind -p "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" -n TimeZoneInformation
+
+####
+regfind -p "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" -n Environment

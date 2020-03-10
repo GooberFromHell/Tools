@@ -1,0 +1,67 @@
+# Check verify that the host is the targeted host and IP settings.
+ipconfig /all
+
+# check all running processes and determine possible malicious programs or security products.
+wmic process get name,executablepath,commandline,processid,parentprocessid | more
+
+Check for any thing currently connected to the system.
+netstat -ano | findstr EST
+
+# Chek for any listening ports/services
+netstat -ano | findstr LIST
+
+# Check system date and time
+date /t & time /t
+
+# check or any logged in users.
+psloggedon
+
+# Check the systems audit policy and find what is or isn't logged
+auditpol
+
+# Check running processes, system cores, close OS type, system up-time
+pslist
+
+# Get service pack number.
+reg.exe query "HKLM\system\currentcontrolset\control\windows"
+
+# Check hostname and domain groups
+nbtstat -rn
+
+route print
+
+# Check any resources the host is connected to.
+net use
+
+# Check any resources the system is currently sharing.
+net share
+
+# Check services currently running
+net start 
+
+# Check the creation date of the contents of system32 to determine possible letitmacy of files and applications
+dir /tc /od C:\WIndows\system32 | more
+
+# Check applications, services, and commnds run during system startup.
+autorunsc -b
+
+# Check applications, services, and commands run when a suer logs in. Good for malware detection.
+autostart -l
+
+# Check registry run key for any anomalous start items. Good for malware detection. 
+reg.exe query HKLM\Software\Microsoft\Windows\CurrentVersion\Run
+reg.exe query HKCU\Software\Microsoft\Windows\CurrentVersion\Run
+
+# Check for possible malware pending installation.
+reg.exe query "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\RunOnce"
+reg.exe query "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\RunOnce"
+
+# Shows the Shell value for winlogon. Commonly used by malware ofr persistance.
+reg query "HKLM\software\microsoft\Windows nt\currentversion\winlogon" /v shell
+
+#Check all users created on the system.
+net users
+
+# Displays SIDs of users currenly logged on the the system.
+reg.exe query HKLM\system\CurrentControlSet\Control\Hivelist
+

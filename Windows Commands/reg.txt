@@ -1,0 +1,49 @@
+#### reg syntax:
+reg add keyname[/v Valuename][/t Type][/d Data]
+
+reg add HKLM\Software\MyCo /v Data /t REG_BINARY /d fe340ead
+
+#### View environment Variables via registry
+reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /s
+
+#### Get user SIDs, Look at the loaded profile directories to match SID to user name.
+	reg query HKLM\system\CurrentControlSet\Control\Hivelist
+
+#### Get system OS information.
+	reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion"
+
+#### Check for auto start processes/services/programs
+	reg query "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run" /s
+	reg query "HKEY_USER\Software\Microsoft\Windows\CurrentVersion\Run" /s
+	reg query "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\RunOnce" /s
+	reg query "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\RunOnce" /s
+
+#### Search for a value within the registry, good for locating possible start locations for malicious processes.
+	Reg query hklm /v  "NV Domain" /s
+	
+#### Search for a key in the registry
+	reg query hklm /k /f "Hivelist" /s
+
+#### Shows the Shell value for winlogon. Commonly used by malware of persistance.
+	reg query "HKLM\software\microsoft\Windows nt\currentversion\winlogon" /v shell
+
+####  Shows system parameter inforamtion to include domain membership.
+	reg query "HKLM\system\currentcontrolset\services\tcpip\parameters" | more
+	
+#### Shows all users and SID registered on the system
+	reg query hklm\sam\sam\domains\account\users\names
+	
+#### Current logged in users
+	reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList"
+
+#### Windows Firewall open/closed ports
+	reg query "HKLM\system\currentcontrolset\services\tcpip\parameters"
+	
+#### List svchost.exe service groups
+	reg query "HKLM\Software\Microsoft \Windows NT\CurrentVersion\Svchost" 
+	
+#### Find firewall rule name using the registry (For use with netsh)
+	reg query "hklm\system\controlset\services\sharedaccess\parameters\firewallpolicy\firewallrules" /s | findstr /i /R "name=.*<WhatYouWant>.*"
+
+#### Search for rules NOT USING NETSH
+	powershell select-string -pattern "name" -path <FileWithRules> -content 0,12

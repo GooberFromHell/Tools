@@ -1,0 +1,18 @@
+C:>cmd /c "date /t && time /t" 
+C:>AuditPol
+C:>ipconfig /all
+C:>reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion"
+C:>psloggedon
+C:>pslist 
+C:>listdlls |C:>find "Command"
+C:>netstat -anb
+C:>fport
+C:>netstat -rn 
+C:>autorunsc
+C:>reg query HKLM\System\CurrentControlSet\Control\Hivelist 
+C:>reg query HKLM\System\CurrentControlSet\Control\Windows 
+C:>reg query "HKLM\System\CurrentControlSet\Control\Session Manager\FileRenameOperations" 
+C:>reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Windows"
+C:>reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon"
+C:>reg query "HKLM\system\currentcontrolset\services\tcpip\parameters"
+C:>systeminfo

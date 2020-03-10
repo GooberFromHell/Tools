@@ -1,0 +1,67 @@
+#### Change Get-Credentials prompt to terminal
+	Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\PowerShell\1\ShellIds" -Name ConsolePrompting -Value $true
+
+#### Stores user credentials for use with remote sessions or Invoke-Commands.
+	$c = get-credential <UserName>
+
+#### Options for PowerShell versions <= 2.0.
+	$o = new-cimsession option -protocol dcom
+
+#### set up new session.
+	$s = new-cimsession -sessionoption $o -credential $c
+
+#### Searching Windows Events
+	Get-WinEvent -FilterHashtable @{LogName='<LogName>';Id ='<EventId>'} -MaxEvents 1
+	
+#### WMI Service Objects
+
+	#### Enum a Process
+		Get-CimInstance -Class win32_process -filter "name like '%<Processname>%'" | select * | more
+
+	#### Find a WMI service.
+		Get-WmiObject Win32_Service | Where {$_.Name -like "<ServiceName>"}
+		
+	#### Get all running service on host
+		Get-WmiObject Win32_Service -filter "state like 'Running'" | select name,state,startmode | format-table
+
+	#### Query Service StartMode
+		get-wmiobject -computername ,ComputerName> -credential $c -query "select * from win32_service where startmode='auto'"
+
+	#### Find all disables services.
+		Get-CimInstance -query "select * from Win32_Service where startmode='disabled'" | select name
+	
+	#### Start/Stop service on remote host
+		$s = New-CimSession -ComputerName <Hostname/IP> -Credential <UserName>
+		Get-CimInstance Win32_Service -Filter "Name='<ServiceName>'" -CimSession $s | Invoke-CimMethod -Name StartService
+
+	#### Check status of service on remote host
+		$s = New-CimSession -ComputerName <Hostname/IP> -Credential <UserName>
+		Get-CimInstance Win32_Service -Filter "Name='<ServiceName>'" -CimSession $s | Select Name,State
+
+	#### Find a process based on its name and retrieve its full path.
+		get-process | where {$_.name -like "<ProcessName>"} | select path
+		
+	#### Get processes running on remote machine.
+		$cred = get-credential <Username>
+		$s = new-pssession -computername <ComputerName> -credential $cred
+		Invoke-Command -session $s {get-process} | select name
+
+#### Uninstall Programs
+
+	#### Uninstall a program on remote host
+		(Get-WmiObject Win32_Product -computername win7 -credential <UserName> -filter "Name like '%Google%'").Uninstall()
+		(Get-WmiObject Win32_Product -computername win7 -credential $c -Filter "Name like '%Ask'").Uninstall()
+		(Get-WmiObject Win32_Product -computername <hostname/ip> -credential <username. -filter "Name like '%<programname%'").Uninstall()
+
+#### General powershell things
+
+	#### Get all aliases for a command.
+		alias | select name,ResolvedCommand | where {$_.name -like "<PowershellModuleItUses>"}
+
+	#### Disconnect from PSSessions.
+		Remove-PSSession <SessionName>,<SessionName>
+		
+	#### get a CIM Session with options to communhicate with Hosts with Powershell 2.0 or less.
+		$cred = get-credential <UserName>
+		$option = new-cimsessionoption -protocol dcom
+		$cimsession = new-cimsession -computername win7 -credential $cred -sessionoption $option

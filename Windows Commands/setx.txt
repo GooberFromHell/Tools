@@ -1,0 +1,4 @@
+#### set remote systems administrator environment prompt
+	setx /s xp.ops.local /u xp\administrator /p L33tHax0r prompt $p$t$p
+	
+#### set

@@ -1,0 +1,25 @@
+#### Create user
+	net user <Username> <Password> /add
+	
+#### Create group
+	net localgroup <Groupname> /add
+	
+#### Add Users to localgroup. Group must exist first.
+	net localgroup <Groupname> <Username> <AdditionalUsernames> /add
+	
+#### View share connect to on other computers
+	net use
+	
+#### View open share on host
+	net share
+	
+#### Add a share from another host.
+	net use <DriveToMountOn> \\<HostName>\<PathToShare> <Password> /user:<domain>\<Username>
+	
+#### create a share on host.
+	net share <ShareName>=<PathToFolder> /remarks:"<Text>"
+	
+#### Add multiple users at once.
+	for /d %name in ('larry','moe','curly','joe') do net user %name 123 /add
+	
+	mkdir "C:\The Stooges"; cacls /p "power users":F

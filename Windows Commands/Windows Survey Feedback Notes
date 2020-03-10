@@ -1,0 +1,16 @@
+Every service has a configurable registry key
+Names provided in the questions might be names, fullnames, first name, last name, frickin anything.
+Port numbers are stored in the registry as hex values.
+
+netstat > common mail ports > pslist for mail process PIDs > back to netstat to verify PIDs running ports > actually runDLL32.exe
+autostartsc -mv <- removes signed microsoft executables
+schtasks /query /v /fo list | more > to reg query /k /f "<Key" /schtasks
+
+hklm/software/microsoft/windows/currentversion/schedule/taskcache/tree <- task metadata
+hklm/software/microsoft/windows/currentversion/schedule/taskcache/tasks <- task caonfigurtion information
+
+
+services look at schtasks
+useracounts attributes look at those. Names, groups, ALL OF IT.
+
+

@@ -1,0 +1,2 @@
+#### View all current environment variables
+	set
