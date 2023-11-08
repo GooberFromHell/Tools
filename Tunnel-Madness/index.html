@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+	<!-- CSS Styling: bootstrap, Prisim.js -->
+	<link href="prism.css" rel="stylesheet" />
+	<link href="bootstrap-neon-glow.css" rel="stylesheet" />
+
+
+	<title>Tunnel Cakes</title>
+</head>
+
+<body style="display: grid; place-items: center;">
+   
+	<div class="container m-5">
+		<div class="card shadow">
+			<div class="card-header p-3">
+				<div class="card-title">
+					<h1>SSH Tunnel Generator</h1>
+				</div>
+				<div class="card-subtitle mb-4 text-muted">
+					Tunnel-Cakes.
+				</div>
+				<div id="form" class="form">
+					<div class="row mb-3">
+						<div class="col">
+							<label for="source" class="form-label">Source</label>
+                            <input type="text" class="form-control form-control-sm" id="source" placeholder="source IP/Hostname">
+                        </div>
+                        <div class="col-2 ">
+                          
+                        </div>
+                        <div class="col-2">
+                              <label for="source-listener" class="form-label">Listener</label>
+                            <input type="text" class="form-control form-control-sm" id="source-listener" placeholder="Port">
+                        </div>
+                        <div class="col-2">
+                          
+                        </div>
+                    </div>
+                    <div id="target" class="row mb-3">
+                   
+                        <div class="col">
+                            <label for="target" class="form-label">Target</label>
+                            <input type="text" class="form-control form-control-sm" id="target" placeholder="source IP/Hostname">
+                        </div>
+                
+                        <div class="col-2 ">
+                            <label for="target-port" class="form-label">SSH Port</label>
+                            <input type="text" class="form-control form-control-sm" id="target-port" placeholder="Port">
+                        </div>
+                        <div class="col-2">
+                             <label for="target-listener" class="form-label">Listener</label>
+                            <input type="text" class="form-control form-control-sm" id="target-listener" placeholder="Port">
+                        </div>
+                        <div class="col-2">
+                          
+                        </div>
+                   </div>
+                </div>
+            </div>
+            <div class="card-text rounded-bottom p-2" style="background-color:#2d2d2d">
+                    
+                    <pre id="result" class="line-numbers language-bash" style="white-space: pre-line;">
+    
+                    </pre>
+           
+            </div>
+        </div>
+    </div>
+    	<!-- Scripts: bootstrap, Prisim.js, logic -->
+	<script type="text/javascript" src="bootstrap.js">
+	</script>
+	<script type="text/javascript" src="prism.js">
+	</script>
+	<script type="text/javascript" src="script.js">
+	</script>
+
+</body>
+</html>
